@@ -27,7 +27,7 @@ def playUltimateAndPlotResults():
     learningPlayer = RLUTTTPlayer(learningModel)
     randomPlayer = RandomUTTTPlayer()
     results = []
-    numberOfSetsOfGames = 60
+    numberOfSetsOfGames = 2
     if os.path.isfile(LEARNING_FILE):
         learningPlayer.loadLearning(LEARNING_FILE)
     for i in range(numberOfSetsOfGames):
@@ -67,7 +67,7 @@ def plotResultsFromFile(resultsFile):
     plotValues = {'X Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[0], results)),
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}
-    drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction', title='RL Player (O) vs. Random Player (X)')
+    drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction', title='RL Player (X) vs. Random Player (O)')
 
 def plotMemoryUsageFromFile(memoryFile):
     results = []
@@ -80,6 +80,6 @@ def plotMemoryUsageFromFile(memoryFile):
 if __name__ == '__main__':
     #playTTTAndPlotResults()
     #playUltimateForTraining()
-    #playUltimateAndPlotResults()
-    plotResultsFromFile('win_pct_player_1.csv')
+    playUltimateAndPlotResults()
+    #plotResultsFromFile('win_pct_player_1.csv')
     #plotMemoryUsageFromFile('results/memory_scaling.csv')

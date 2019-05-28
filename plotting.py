@@ -12,8 +12,8 @@ def drawXYPlotByFactor(dataDict, xlabel='', ylabel='', legend=None,
     displayedPlots = []
     pltfn = plt.semilogy if logy else plt.plot
     for factor in dataDict:
-        xpoints = [a[0] for a in dataDict[factor]]
-        ypoints = [a[1] for a in dataDict[factor]]
+        xpoints = [float(a[0]) for a in dataDict[factor]]
+        ypoints = [float(a[1]) for a in dataDict[factor]]
         displayedPlots.append(pltfn(xpoints, ypoints, PLOT_STYLES[styleCount]))
         styleCount = min(styleCount+1, len(PLOT_STYLES)-1)
     plt.xlabel(xlabel)
