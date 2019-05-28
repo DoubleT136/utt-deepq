@@ -80,6 +80,6 @@ def plotMemoryUsageFromFile(memoryFile):
 if __name__ == '__main__':
     #playTTTAndPlotResults()
     #playUltimateForTraining()
-    playUltimateAndPlotResults()
-    #plotResultsFromFile('results/ultimate_nn1_results_o.csv')
+    #playUltimateAndPlotResults()
+    plotResultsFromFile('win_pct_player_1.csv')
     #plotMemoryUsageFromFile('results/memory_scaling.csv')
