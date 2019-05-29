@@ -6,9 +6,11 @@ from plotting import drawXYPlotByFactor
 import os, csv
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 from game import GameSequence
+import getpass
+from time import gmtime, asctime
 
-LEARNING_FILE = 'ultimate_player_nn1.h5'
-WIN_PCT_FILE = 'win_pct_player_1.csv'
+LEARNING_FILE = 'ultimate_player-' + getpass.getuser()+'-'+ '.h5'
+WIN_PCT_FILE = 'win_pct_player-'+ getpass.getuser()+'-'+ asctime(gmtime())+ '.csv'
 
 def playTTTAndPlotResults():
     learningPlayer = RLTTTPlayer()
@@ -28,18 +30,20 @@ def playUltimateAndPlotResults():
     learningPlayer = RLUTTTPlayer(learningModel)
     randomPlayer = RandomUTTTPlayer()
     results = []
-    numberOfSetsOfGames = 2
+    numberOfSetsOfGames = 20
     if os.path.isfile(LEARNING_FILE):
         learningPlayer.loadLearning(LEARNING_FILE)
     for i in range(numberOfSetsOfGames):
+        print "-----------------starting iteration ", str(i)
         games = GameSequence(100, learningPlayer, randomPlayer, BoardClass=UTTTBoard, BoardDecisionClass=UTTTBoardDecision)
-        results.append(games.playGamesAndGetWinPercent())
+        winpercent = games.playGamesAndGetWinPercent()
+        results.append(winpercent)
     learningPlayer.saveLearning(LEARNING_FILE)
     writeResultsToFile(results)
     plotValues = {'X Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[0], results)),
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}
-    drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction',title='RL Player (O) vs. Random Player (X)')
+    drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction',title='RL Player (X) vs. Random Player (O)')
 
 def playUltimateForTraining():
     learningModel = TableLearning()

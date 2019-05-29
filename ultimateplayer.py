@@ -46,6 +46,8 @@ class RLUTTTPlayer(UTTTPlayer):
     def __init__(self, learningModel):
         self.learningAlgo = learningModel
         super(RLUTTTPlayer, self).__init__()
+        self.epsilon = 0.8
+        self.counter = 0
 
     def printValues(self):
         self.learningAlgo.printValues()
@@ -60,6 +62,11 @@ class RLUTTTPlayer(UTTTPlayer):
         self.learningAlgo.resetForNewGame()
 
     def finishGame(self):
+        # update epsilon
+        self.epsilon -= 0.00004
+        self.counter += 1
+        if self.counter == 250:
+            print 'epsilon is ', self.epsilon
         self.learningAlgo.gameOver()
 
     def makeNextMove(self):
@@ -69,7 +76,7 @@ class RLUTTTPlayer(UTTTPlayer):
             activeBoardLocations = [nextBoardLocation]
             if None in nextBoardLocation:
                 activeBoardLocations = self.board.getActiveBoardLocations()
-            if random.uniform(0, 1) < 0.8:      # Make a random move with probability 0.2
+            if random.uniform(0, 1) > self.epsilon:      # Make a random move with probability 0.2
                 moveChoices = {}
                 for boardLocation in activeBoardLocations:
                     emptyPlaces = self.board.getEmptyBoardPlaces(boardLocation)
@@ -82,6 +89,8 @@ class RLUTTTPlayer(UTTTPlayer):
                 emptyPlaces = self.board.getEmptyBoardPlaces(chosenBoard)
                 pickOne = random.choice(emptyPlaces)
             self.board.makeMove(self.player, chosenBoard, pickOne)
+
+            #Update epsilon
         return previousState
 
     def learnFromMove(self, prevBoardState):

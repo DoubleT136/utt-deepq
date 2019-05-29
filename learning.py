@@ -3,7 +3,10 @@ import json
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.utils import plot_model
+from tensorflow.keras.callbacks import TensorBoard
 import numpy as np
+from time import time
+
 
 class GenericLearning(object):
     def getBoardStateValue(self, player, board, boardState):
@@ -76,6 +79,7 @@ class NNUltimateLearning(GenericLearning):
     def initializeModel(self):
         self.model = Sequential()
         self.model.add(Dense(81, input_dim=81, activation='relu'))
+        self.model.add(Dense(81, input_dim=81, activation='relu'))
         #self.model.add(Dense(81, activation='relu'))
         self.model.add(Dense(1, activation='linear', kernel_initializer='glorot_uniform'))
         self.model.compile(loss='mean_squared_error', optimizer='adam', metrics=['accuracy'])
@@ -102,7 +106,8 @@ class NNUltimateLearning(GenericLearning):
         return map(lambda x: self.STATE_TO_NUMBER_MAP.get(x), boardState)
 
     def trainModel(self, boardStates, y):
-        self.model.fit(np.asarray(boardStates), np.asarray(y), verbose=0)
+        tensorboard = TensorBoard(log_dir="logs/", update_freq='epoch')
+        self.model.fit(np.asarray(boardStates), np.asarray(y), batch_size = 100, verbose=0, callbacks=[tensorboard])
 
     def getPrediction(self, boardState):
         return self.model.predict(np.asarray([self.convertBoardStateToInput(boardState)]))[0]
