@@ -63,9 +63,9 @@ class RLUTTTPlayer(UTTTPlayer):
 
     def finishGame(self):
         # update epsilon
-        self.epsilon -= 0.00004
+        self.epsilon -= 1/18000
         self.counter += 1
-        if self.counter == 250:
+        if self.counter == 200:
             print 'epsilon is ', self.epsilon
         self.learningAlgo.gameOver()
 

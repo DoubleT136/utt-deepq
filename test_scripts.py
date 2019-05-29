@@ -30,7 +30,7 @@ def playUltimateAndPlotResults():
     learningPlayer = RLUTTTPlayer(learningModel)
     randomPlayer = RandomUTTTPlayer()
     results = []
-    numberOfSetsOfGames = 20
+    numberOfSetsOfGames = 200
     if os.path.isfile(LEARNING_FILE):
         learningPlayer.loadLearning(LEARNING_FILE)
     for i in range(numberOfSetsOfGames):
