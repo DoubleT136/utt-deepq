@@ -46,7 +46,8 @@ class RLUTTTPlayer(UTTTPlayer):
     def __init__(self, learningModel):
         self.learningAlgo = learningModel
         super(RLUTTTPlayer, self).__init__()
-        self.epsilon = 0.8
+        self.epsilon = 1
+        self.ep_step = 1/18000
         self.counter = 0
 
     def printValues(self):
@@ -63,7 +64,7 @@ class RLUTTTPlayer(UTTTPlayer):
 
     def finishGame(self):
         # update epsilon
-        self.epsilon -= 1/18000
+        self.epsilon -= self.ep_step
         self.counter += 1
         if self.counter == 200:
             print 'epsilon is ', self.epsilon
