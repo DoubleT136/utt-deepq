@@ -4,6 +4,7 @@ from ultimateplayer import RandomUTTTPlayer, RLUTTTPlayer
 from learning import NNUltimateLearning, TableLearning
 from plotting import drawXYPlotByFactor
 import os, csv
+os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
 from game import GameSequence
 
 LEARNING_FILE = 'ultimate_player_nn1.h5'
