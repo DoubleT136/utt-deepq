@@ -9,7 +9,7 @@ from game import GameSequence, SingleGame
 import getpass
 from time import gmtime, asctime
 
-LEARNING_FILE = 'ultimate_player-' + getpass.getuser()+'-'+ '.h5'
+LEARNING_FILE = 'ultimate_player-' + getpass.getuser()+ '.h5'
 WIN_PCT_FILE = 'win_pct_player-'+ getpass.getuser()+'-'+ asctime(gmtime())+ '.csv'
 
 def playTTTAndPlotResults():
