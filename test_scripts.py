@@ -1,11 +1,11 @@
 from ultimateboard import UTTTBoard, UTTTBoardDecision
 from player import RandomTTTPlayer, RLTTTPlayer
-from ultimateplayer import RandomUTTTPlayer, RLUTTTPlayer
+from ultimateplayer import HumanUTTTPlayer, RandomUTTTPlayer, RLUTTTPlayer
 from learning import NNUltimateLearning, TableLearning
 from plotting import drawXYPlotByFactor
 import os, csv
 os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
-from game import GameSequence
+from game import GameSequence, SingleGame
 import getpass
 from time import gmtime, asctime
 
@@ -44,6 +44,21 @@ def playUltimateAndPlotResults():
                   'O Win Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[1], results)),
                   'Draw Fraction': zip(range(numberOfSetsOfGames), map(lambda x: x[2], results))}
     drawXYPlotByFactor(plotValues, 'Number of Sets (of 100 Games)', 'Fraction',title='RL Player (X) vs. Random Player (O)')
+
+def playAgainstAgent():
+    learningModel = NNUltimateLearning(UTTTBoardDecision)
+    learningPlayer = RLUTTTPlayer(learningModel)
+    humanPlayer = HumanUTTTPlayer()
+    results = []
+    numberOfSetsOfGames = 200
+    if os.path.isfile(LEARNING_FILE):
+        learningPlayer.loadLearning(LEARNING_FILE)
+    else:
+        print 'ERROR: no model found'
+        return
+
+    game = SingleGame(learningPlayer, humanPlayer, UTTTBoard, UTTTBoardDecision)
+    game.playAGame()
 
 def playUltimateForTraining():
     learningModel = TableLearning()
@@ -85,6 +100,7 @@ def plotMemoryUsageFromFile(memoryFile):
 if __name__ == '__main__':
     #playTTTAndPlotResults()
     #playUltimateForTraining()
-    playUltimateAndPlotResults()
+    #playUltimateAndPlotResults()
+    playAgainstAgent()
     #plotResultsFromFile('win_pct_player_1.csv')
     #plotMemoryUsageFromFile('results/memory_scaling.csv')

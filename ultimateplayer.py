@@ -42,11 +42,36 @@ class RandomUTTTPlayer(UTTTPlayer):
     def learnFromMove(self, prevBoardState):
         pass  # Random player does not learn from move
 
+class HumanUTTTPlayer(UTTTPlayer):
+    def makeNextMove(self):
+        previousState = self.board.getBoardState()
+        if self.isBoardActive():
+            print "you are player ", self.player
+            self.board.printBoard()
+            nextBoardLocation = self.board.getNextBoardLocation()
+            if None in nextBoardLocation:
+                print "next board is inactive. Please choose new board"
+                i, j = input("Enter row and col for board: ")
+                while not self.board.isSubBoardActive(i, j):
+                    print "invalid board"
+                    i, j = input("Enter row and col for board: ")
+                nextBoardLocation = (i, j)
+            print 'make your move on board', nextBoardLocation
+            x, y = input("Enter row and col for space: ")
+            while self.board[i][j].getGrid(x, y) != GridStates.EMPTY:
+                print 'That location is not empty'
+                x, y = input("Enter row and col for space: ")
+            self.board.makeMove(self.player, nextBoardLocation, (x, y))
+        return previousState
+
+    def learnFromMove(self, prevBoardState):
+        pass
+
 class RLUTTTPlayer(UTTTPlayer):
     def __init__(self, learningModel):
         self.learningAlgo = learningModel
         super(RLUTTTPlayer, self).__init__()
-        self.epsilon = 1
+        self.epsilon = 0
         self.ep_step = 1/18000
         self.counter = 0
 
@@ -99,6 +124,48 @@ class RLUTTTPlayer(UTTTPlayer):
 
     def saveLearning(self, filename):
         self.learningAlgo.saveLearning(filename)
+
+    def loadLearning(self, filename):
+        self.learningAlgo.loadLearning(filename)
+
+class TrainedUTTTPlayer(UTTTPlayer):
+    def __init__(self, learningModel):
+        self.learningAlgo = learningModel
+        super(RLUTTTPlayer, self).__init__()
+
+    def printValues(self):
+        pass
+
+    def startNewGame(self):
+        self.learningAlgo.resetForNewGame()
+
+    def finishGame(self):
+        pass
+
+    def makeNextMove(self):
+        previousState = self.board.getBoardState()
+        if self.isBoardActive():
+            nextBoardLocation = self.board.getNextBoardLocation()
+            activeBoardLocations = [nextBoardLocation]
+            if None in nextBoardLocation:
+                activeBoardLocations = self.board.getActiveBoardLocations()
+            moveChoices = {}
+            for boardLocation in activeBoardLocations:
+                emptyPlaces = self.board.getEmptyBoardPlaces(boardLocation)
+                for placeOnBoard in emptyPlaces:
+                    possibleNextState = self.testNextMove(previousState, boardLocation, placeOnBoard)
+                    moveChoices[(tuple(boardLocation), placeOnBoard)] = self.learningAlgo.getBoardStateValue(self.player, self.board, possibleNextState)
+            (chosenBoard, pickOne) = max(moveChoices, key=moveChoices.get)
+            self.board.makeMove(self.player, chosenBoard, pickOne)
+
+            #Update epsilon
+        return previousState
+
+    def learnFromMove(self, prevBoardState):
+        pass
+
+    def saveLearning(self, filename):
+        pass
 
     def loadLearning(self, filename):
         self.learningAlgo.loadLearning(filename)

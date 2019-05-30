@@ -57,7 +57,7 @@ class UTTTBoard(object):
     def getActiveBoardLocations(self):
         activeBoards = []
         for (i, j) in itertools.product(range(3), range(3)):
-            if self.board[i][j].getBoardDecision() == TTTBoardDecision.ACTIVE or self.board[i][j].getDoesBoardHaveEmptyCell():
+            if self.board[i][j].getBoardDecision() == TTTBoardDecision.ACTIVE: #or self.board[i][j].getDoesBoardHaveEmptyCell():
                 activeBoards.append((i, j))
         return activeBoards
 
@@ -82,6 +82,9 @@ class UTTTBoard(object):
         else:
             nextTttboard = self.board[i][j]
             self.nextBoardLocation = [i, j] if nextTttboard.getBoardDecision() == TTTBoardDecision.ACTIVE else [None, None]
+
+    def isSubBoardActive(self, i, j):
+        return self.board[i][j].getBoardDecision() == TTTBoardDecision.ACTIVE #or self.board[i][j].getDoesBoardHaveEmptyCell()
 
     def printBoard(self):
         delimiter = '-------------'*3+'\n'
