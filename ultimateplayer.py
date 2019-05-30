@@ -1,3 +1,4 @@
+from __future__ import division
 from ultimateboard import UTTTBoardDecision, UTTTBoard
 from learning import TableLearning
 import random
@@ -90,9 +91,12 @@ class RLUTTTPlayer(UTTTPlayer):
     def finishGame(self):
         # update epsilon
         self.epsilon -= self.ep_step
+        if(self.epsilon < 0):
+            self.epsilon = 0
         self.counter += 1
         if self.counter == 200:
             print 'epsilon is ', self.epsilon
+            self.counter = 0
         self.learningAlgo.gameOver()
 
     def makeNextMove(self):
