@@ -1,5 +1,14 @@
 from board import TTTBoard, TTTBoardDecision, GridStates
 import itertools
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 class UTTTBoardDecision():
     ACTIVE = 10
@@ -86,20 +95,29 @@ class UTTTBoard(object):
     def isSubBoardActive(self, i, j):
         return self.board[i][j].getBoardDecision() == TTTBoardDecision.ACTIVE #or self.board[i][j].getDoesBoardHaveEmptyCell()
 
-    def printBoard(self):
+    def printBoard(self, nextBoardLocation = None):
         delimiter = '-------------'*3+'\n'
         for boardRow in range(3):
             rowString = delimiter
-            rowString += self.getBoardRowString(boardRow, 0) + '\n' + delimiter
-            rowString += self.getBoardRowString(boardRow, 1) + '\n' + delimiter
-            rowString += self.getBoardRowString(boardRow, 2) + '\n' + delimiter[:-1]
+            rowString += self.getBoardRowString(boardRow, 0, nextBoardLocation) + '\n' + delimiter
+            rowString += self.getBoardRowString(boardRow, 1, nextBoardLocation) + '\n' + delimiter
+            rowString += self.getBoardRowString(boardRow, 2, nextBoardLocation) + '\n' + delimiter[:-1]
             print rowString
 
-    def getBoardRowString(self, boardRow, row):
+    def getBoardRowString(self, boardRow, row, nextBoardLocation = None):
         rowString = ''
         for boardColumn in range(3):
             board = self.board[boardRow][boardColumn]
+            if board.getBoardDecision() == TTTBoardDecision.DRAW:
+                rowString += bcolors.WARNING
+            elif board.getBoardDecision() == TTTBoardDecision.WON_O:
+                rowString += bcolors.OKBLUE
+            elif board.getBoardDecision() == TTTBoardDecision.WON_X:
+                rowString += bcolors.OKGREEN
+            elif [boardRow, boardColumn] == nextBoardLocation:
+                rowString += bcolors.FAIL
             rowString += board.getBoardRowString(row)
+            rowString += bcolors.ENDC
         return rowString
 
     def getBoardState(self):

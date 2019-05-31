@@ -107,7 +107,7 @@ class NNUltimateLearning(GenericLearning):
 
     def trainModel(self, boardStates, y):
         tensorboard = TensorBoard(log_dir="logs/", update_freq='epoch')
-        self.model.fit(np.asarray(boardStates), np.asarray(y), batch_size = 100, verbose=0, callbacks=[tensorboard])
+        self.model.fit(np.asarray(boardStates), np.asarray(y), verbose=0, callbacks=[tensorboard])
 
     def getPrediction(self, boardState):
         return self.model.predict(np.asarray([self.convertBoardStateToInput(boardState)]))[0]

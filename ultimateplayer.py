@@ -1,5 +1,6 @@
 from __future__ import division
 from ultimateboard import UTTTBoardDecision, UTTTBoard
+from board import GridStates
 from learning import TableLearning
 import random
 
@@ -47,19 +48,20 @@ class HumanUTTTPlayer(UTTTPlayer):
     def makeNextMove(self):
         previousState = self.board.getBoardState()
         if self.isBoardActive():
-            print "you are player ", self.player
-            self.board.printBoard()
+            print "\n\nyou are player ", self.player
             nextBoardLocation = self.board.getNextBoardLocation()
+            self.board.printBoard(nextBoardLocation)
             if None in nextBoardLocation:
                 print "next board is inactive. Please choose new board"
                 i, j = input("Enter row and col for board: ")
                 while not self.board.isSubBoardActive(i, j):
                     print "invalid board"
                     i, j = input("Enter row and col for board: ")
-                nextBoardLocation = (i, j)
+                nextBoardLocation = [i, j]
+                self.board.printBoard(nextBoardLocation)
             print 'make your move on board', nextBoardLocation
             x, y = input("Enter row and col for space: ")
-            while self.board[i][j].getGrid(x, y) != GridStates.EMPTY:
+            while self.board.board[nextBoardLocation[0]][nextBoardLocation[1]].getGrid(x, y) != GridStates.EMPTY:
                 print 'That location is not empty'
                 x, y = input("Enter row and col for space: ")
             self.board.makeMove(self.player, nextBoardLocation, (x, y))
